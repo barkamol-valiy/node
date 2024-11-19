@@ -3,19 +3,15 @@ const ExpressHandlebars = require("express3-handlebars/lib/express-handlebars");
 var handlebars = require("express3-handlebars").create({
   defaultLayout: "main",
 });
+
+var fortune = require("./module/fortune");
+
 var app = express();
 app.engine("handlebars", handlebars.engine);
 app.set("view engine", "handlebars");
 app.set("port", process.env.PORT || 3000);
 
 // todo some data
-const data = [
-  "Conquer your fears or they will conquer you.",
-  "Rivers need springs.",
-  "Do not fear what you don't know.",
-  "You will have a pleasant surprise.",
-  "Whenever possible, keep it simple.",
-];
 
 // /routes
 app.get("/", function (req, res) {
@@ -23,8 +19,7 @@ app.get("/", function (req, res) {
 });
 
 app.get("/about", function (req, res) {
-  var randomData = data[Math.floor(Math.random() * data.length)];
-  res.render("about", { data: randomData });
+  res.render("about", { data: fortune.getFortune() });
 });
 
 //!MIDDLEWARE
