@@ -4,7 +4,7 @@ var handlebars = require("express3-handlebars").create({
   defaultLayout: "main",
 });
 
-var fortune = require("./module/fortune");
+const handler = require("./lib/routehandle");
 
 var app = express();
 app.engine("handlebars", handlebars.engine);
@@ -12,22 +12,16 @@ app.set("view engine", "handlebars");
 app.set("port", process.env.PORT || 3000);
 
 // /routes
-app.get("/", function (req, res) {
-  res.render("home");
-});
 
-app.get("/about", function (req, res) {
-  res.render("about", { data: fortune.getFortune() });
-});
+app.get("/", handler.home);
+
+app.get("/about", handler.about);
 
 // middleware
 
 app.use(express.static(__dirname + "/public"));
 
-app.use(function (req, res) {
-  res.status(404);
-  res.render("404");
-});
+app.use(handler.notFound);
 
 //error handling
 app.use(function (err, req, res, next) {
