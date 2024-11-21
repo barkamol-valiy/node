@@ -11,8 +11,6 @@ app.engine("handlebars", handlebars.engine);
 app.set("view engine", "handlebars");
 app.set("port", process.env.PORT || 3000);
 
-// todo some data
-
 // /routes
 app.get("/", function (req, res) {
   res.render("home");
@@ -22,7 +20,8 @@ app.get("/about", function (req, res) {
   res.render("about", { data: fortune.getFortune() });
 });
 
-//!MIDDLEWARE
+// middleware
+
 app.use(express.static(__dirname + "/public"));
 
 app.use(function (req, res) {
