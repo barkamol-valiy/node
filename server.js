@@ -10,6 +10,7 @@ var app = express();
 app.engine("handlebars", handlebars.engine);
 app.set("view engine", "handlebars");
 app.set("port", process.env.PORT || 3000);
+const port = app.get("port");
 
 // /routes
 
@@ -24,16 +25,15 @@ app.use(express.static(__dirname + "/public"));
 app.use(handler.notFound);
 
 //error handling
-app.use(function (err, req, res, next) {
-  console.error(err.stack);
-  res.status(500);
-  res.render("500internalError");
-});
+app.use(handler.internalError);
 
-app.listen(app.get("port"), function () {
-  console.log(
-    "Express started on http://localhost:" +
-      app.get("port") +
-      "; press Ctrl+C to terminate..."
-  );
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(
+      `Express started on http://localhost:${port}` +
+        "; press Ctrl-C to terminate."
+    );
+  });
+} else {
+  module.exports = app;
+}
