@@ -1,45 +1,35 @@
-var express = require("express");
-const ExpressHandlebars = require("express3-handlebars/lib/express-handlebars");
-var handlebars = require("express3-handlebars").create({
+const express = require("express");
+const path = require("path");
+const handlebars = require("express3-handlebars").create({
   defaultLayout: "main",
 });
 
-var fortune = require("./module/fortune");
+const handler = require("./lib/routehandle");
 
-var app = express();
+const app = express();
 app.engine("handlebars", handlebars.engine);
 app.set("view engine", "handlebars");
 app.set("port", process.env.PORT || 3000);
+const port = app.get("port");
 
-// /routes
-app.get("/", function (req, res) {
-  res.render("home");
-});
+// / Routes
+app.get("/", handler.home);
+app.get("/about", handler.about);
 
-app.get("/about", function (req, res) {
-  res.render("about", { data: fortune.getFortune() });
-});
+// : Middleware
+app.use(express.static(path.join(__dirname, "public")));
+app.use(handler.notFound);
 
-// middleware
+// Error Handling
+app.use(handler.internalError);
 
-app.use(express.static(__dirname + "/public"));
-
-app.use(function (req, res) {
-  res.status(404);
-  res.render("404");
-});
-
-//error handling
-app.use(function (err, req, res, next) {
-  console.error(err.stack);
-  res.status(500);
-  res.render("500internalError");
-});
-
-app.listen(app.get("port"), function () {
-  console.log(
-    "Express started on http://localhost:" +
-      app.get("port") +
-      "; press Ctrl+C to terminate..."
-  );
-});
+// Start Server
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(
+      `Express started on http://localhost:${port}; press Ctrl-C to terminate.`
+    );
+  });
+} else {
+  module.exports = app;
+}

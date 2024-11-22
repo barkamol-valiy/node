@@ -1,0 +1,11 @@
+{
+  "env": {
+    "node": true, // For Node.js globals like `__dirname` and `process`
+    "jest": true // For Jest globals like `test`, `expect`, `beforeEach`, etc.
+  },
+  "extends": ["eslint:recommended"],
+  "rules": {
+    "no-unused-vars": ["warn", { "args": "none" }],
+    "no-undef": "error"
+  }
+}
